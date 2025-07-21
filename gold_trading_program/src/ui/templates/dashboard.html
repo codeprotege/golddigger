@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gold Trading Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        .metric { margin: 20px; font-size: 24px; }
+    </style>
+</head>
+<body>
+    <h1>Gold Trading Dashboard</h1>
+    <div class="metric">Price: <span id="price">{{ price }}</span></div>
+    <div class="metric">Signal: <span id="signal">{{ signal }}</span></div>
+    <div class="metric">Position: <span id="position">{{ position }}</span></div>
+
+    <script>
+        function updateData() {
+            fetch('/data')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('price').innerText = data.price;
+                    document.getElementById('signal').innerText = data.signal;
+                    document.getElementById('position').innerText = data.position;
+                });
+        }
+
+        setInterval(updateData, 5000); // Update every 5 seconds
+    </script>
+</body>
+</html>

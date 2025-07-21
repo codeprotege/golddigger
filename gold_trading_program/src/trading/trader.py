@@ -55,14 +55,12 @@ class Trader:
         return self.positions.get(symbol, 0)
 
 if __name__ == "__main__":
+    from brokerage import AlpacaBrokerage
     logging.basicConfig(level=logging.INFO)
 
-    class DummyBrokerage:
-        def submit_order(self, symbol, quantity, order_type):
-            print(f"Dummy Brokerage: Submitted {order_type} order for {quantity} of {symbol}")
-            return True
-
-    trader = Trader(brokerage_api=DummyBrokerage())
-    trader.place_order(symbol="XAUUSD", quantity=1, order_type="buy")
-    trader.place_order(symbol="XAUUSD", quantity=0.5, order_type="sell")
-    print(f"Current position for XAUUSD: {trader.get_position('XAUUSD')}")
+    brokerage = AlpacaBrokerage()
+    if brokerage.api:
+        trader = Trader(brokerage_api=brokerage)
+        trader.place_order(symbol="XAUUSD", quantity=1, order_type="buy")
+        trader.place_order(symbol="XAUUSD", quantity=0.5, order_type="sell")
+        print(f"Current position for XAUUSD: {trader.get_position('XAUUSD')}")

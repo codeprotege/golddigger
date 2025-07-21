@@ -1,4 +1,7 @@
 requests
 pandas
 numpy
-tkinter
+influxdb-client
+backtrader
+alpaca-trade-api
+Flask

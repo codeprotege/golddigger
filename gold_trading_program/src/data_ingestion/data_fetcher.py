@@ -2,6 +2,8 @@ import requests
 import time
 import logging
 
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
 class DataFetcher:
     """
     A class to fetch gold price data from the Alpha Vantage API.

@@ -57,11 +57,48 @@ class DataProcessor:
             return pd.DataFrame()
 
     def store_data(self, df):
+        self.store_data_csv(df)
+        self.store_data_influx(df)
+
+    def store_data_csv(self, df):
         try:
             df.to_csv("gold_prices.csv", mode='a', header=not pd.io.common.file_exists("gold_prices.csv"), index=False)
-            logging.info("Data stored successfully.")
+            logging.info("Data stored successfully to CSV.")
         except IOError as e:
-            logging.error(f"Error storing data: {e}")
+            logging.error(f"Error storing data to CSV: {e}")
+
+    def store_data_influx(self, df):
+        try:
+            from influxdb_client import InfluxDBClient, Point
+            from influxdb_client.client.write_api import SYNCHRONOUS
+            import os
+
+            token = os.environ.get("INFLUXDB_TOKEN")
+            org = os.environ.get("INFLUXDB_ORG")
+            bucket = os.environ.get("INFLUXDB_BUCKET")
+            url = "http://localhost:8086"
+
+            if not all([token, org, bucket]):
+                logging.warning("InfluxDB environment variables not set. Skipping InfluxDB storage.")
+                return
+
+            client = InfluxDBClient(url=url, token=token, org=org)
+            write_api = client.write_api(write_options=SYNCHRONOUS)
+
+            point = Point("gold_price") \
+                .tag("source", "alphavantage") \
+                .field("exchange_rate", df.iloc[0]['exchange_rate']) \
+                .field("bid_price", df.iloc[0]['bid_price']) \
+                .field("ask_price", df.iloc[0]['ask_price']) \
+                .time(df.iloc[0]['last_refreshed'])
+
+            write_api.write(bucket=bucket, org=org, record=point)
+            logging.info("Data stored successfully to InfluxDB.")
+
+        except ImportError:
+            logging.warning("influxdb-client not installed. Skipping InfluxDB storage.")
+        except Exception as e:
+            logging.error(f"Error storing data to InfluxDB: {e}")
 
 if __name__ == "__main__":
     # Example usage with dummy data

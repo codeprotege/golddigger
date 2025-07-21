@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import logging
 
 class TechnicalAnalyzer:
     """
@@ -10,9 +11,45 @@ class TechnicalAnalyzer:
         Initializes the TechnicalAnalyzer.
 
         Args:
-            data (pandas.DataFrame): A DataFrame containing price data.
+            data (pandas.DataFrame): A DataFrame containing the latest price data.
         """
         self.data = data
+        self.fetch_historical_data()
+
+    def fetch_historical_data(self):
+        try:
+            from influxdb_client import InfluxDBClient
+            import os
+
+            token = os.environ.get("INFLUXDB_TOKEN")
+            org = os.environ.get("INFLUXDB_ORG")
+            bucket = os.environ.get("INFLUXDB_BUCKET")
+            url = "http://localhost:8086"
+
+            if not all([token, org, bucket]):
+                logging.warning("InfluxDB environment variables not set. Skipping historical data fetch.")
+                return
+
+            client = InfluxDBClient(url=url, token=token, org=org)
+            query_api = client.query_api()
+
+            query = f'from(bucket:"{bucket}") |> range(start: -30d) |> filter(fn:(r) => r._measurement == "gold_price")'
+            result = query_api.query_data_frame(org=org, query=query)
+
+            if not result.empty:
+                # The result from InfluxDB is a DataFrame with a different structure.
+                # We need to pivot it to get the desired format.
+                result = result.pivot(index='_time', columns='_field', values='_value').reset_index()
+                result = result.rename(columns={'_time': 'last_refreshed', 'exchange_rate': 'exchange_rate'})
+
+                # Combine historical data with the new data
+                self.data = pd.concat([result, self.data], ignore_index=True)
+                self.data = self.data.sort_values(by='last_refreshed').reset_index(drop=True)
+
+        except ImportError:
+            logging.warning("influxdb-client not installed. Skipping historical data fetch.")
+        except Exception as e:
+            logging.error(f"Error fetching historical data from InfluxDB: {e}")
 
     def calculate_sma(self, window):
         """
