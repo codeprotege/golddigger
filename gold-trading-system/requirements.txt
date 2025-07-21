@@ -1,0 +1,12 @@
+Flask
+Flask-SQLAlchemy
+psycopg2-binary
+PyJWT
+Werkzeug
+gunicorn
+pandas
+pandas-ta
+redis
+backtesting
+scikit-learn
+streamlit
