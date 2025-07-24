@@ -1,0 +1,39 @@
+{
+  "supply_factors": {
+    "annual_mine_production_tonnes": null,
+    "all_in_sustaining_cost_usd_per_ounce": null,
+    "above_ground_stock_change_percent": null,
+    "new_discoveries_metric_tonnes": null,
+    "recycled_gold_supply_tonnes": null
+  },
+  "demand_factors": {
+    "jewellery_demand_tonnes": null,
+    "technology_and_industrial_demand_tonnes": null,
+    "investment_bar_and_coin_demand_tonnes": null,
+    "etf_holdings_change_tonnes": null,
+    "central_bank_net_purchases_tonnes": null
+  },
+  "macro_economic_factors": {
+    "global_gdp_growth_percent": 2.86326302627855
+  },
+  "financial_market_factors": {
+    "sp500_index_level": 6358.91015625,
+    "vix_volatility_index_level": 15.369999885559082,
+    "us_treasury_yield_10yr_percent": 4.388000011444092
+  },
+  "geopolitical_factors": {
+    "geopolitical_risk_index": null,
+    "trade_tariff_rate_percent": null
+  },
+  "commodity_interactions": {
+    "brent_crude_oil_price_usd_per_barrel": 69.31999969482422
+  },
+  "currency_factors": {
+    "usd_eur_exchange_rate": 1.1766090393066406,
+    "usd_jpy_exchange_rate": 146.26499938964844
+  },
+  "market_sentiment": {
+    "investor_risk_aversion_index": null,
+    "safe_haven_flow_tonnes": null
+  }
+}
