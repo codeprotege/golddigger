@@ -1,0 +1,10 @@
+yfinance
+pandas
+fredapi
+fastapi
+uvicorn
+pandas-ta
+xgboost
+tensorflow
+transformers
+torch
