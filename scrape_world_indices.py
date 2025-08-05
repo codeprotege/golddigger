@@ -1,10 +1,10 @@
 import yfinance as yf
 import pandas as pd
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 def scrape_hourly_data(ticker, name):
     """
-    Scrapes hourly data for a given ticker for the last 730 days.
+    Scrapes hourly data for a given ticker for the last 730 days using UTC.
 
     Args:
         ticker (str): The ticker symbol to scrape.
@@ -13,7 +13,7 @@ def scrape_hourly_data(ticker, name):
     Returns:
         None
     """
-    end_date = datetime.now()
+    end_date = datetime.now(timezone.utc)
     start_date = end_date - timedelta(days=730)
 
     start_date_str = start_date.strftime('%Y-%m-%d')
